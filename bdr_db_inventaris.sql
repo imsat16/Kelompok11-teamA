@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 13, 2020 at 07:38 AM
+-- Generation Time: Sep 20, 2020 at 03:57 PM
 -- Server version: 10.4.13-MariaDB
 -- PHP Version: 7.4.7
 
@@ -24,6 +24,20 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `tb_customer`
+--
+
+CREATE TABLE `tb_customer` (
+  `id_pembeli` varchar(11) NOT NULL,
+  `nama_lengkap_pembeli` varchar(100) NOT NULL,
+  `jenis_kelamin` enum('pria','wanita') NOT NULL,
+  `no_telepon_pembeli` int(13) NOT NULL,
+  `email_pembeli` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `tb_detail_transaksi`
 --
 
@@ -38,10 +52,10 @@ CREATE TABLE `tb_detail_transaksi` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tb_kategori`
+-- Table structure for table `tb_kategori_produk`
 --
 
-CREATE TABLE `tb_kategori` (
+CREATE TABLE `tb_kategori_produk` (
   `id_kategori` varchar(11) NOT NULL,
   `nama_kategori` varchar(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -49,10 +63,10 @@ CREATE TABLE `tb_kategori` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tb_kode_perusahaan`
+-- Table structure for table `tb_kode_pabrik`
 --
 
-CREATE TABLE `tb_kode_perusahaan` (
+CREATE TABLE `tb_kode_pabrik` (
   `id_kode` varchar(11) NOT NULL,
   `kode_perusahaan` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -68,7 +82,7 @@ CREATE TABLE `tb_login` (
   `id_pegawai` varchar(11) NOT NULL,
   `id_kode` varchar(11) NOT NULL,
   `password` varchar(35) NOT NULL,
-  `status` enum('manager','kasir') NOT NULL
+  `status` enum('adminr','kasir') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -84,20 +98,6 @@ CREATE TABLE `tb_pegawai` (
   `no_telepon_pegawai` int(13) NOT NULL,
   `jenis_kelamin_pegawai` enum('pria','wanita') NOT NULL,
   `tanggal_rekrut` date NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `tb_pembeli`
---
-
-CREATE TABLE `tb_pembeli` (
-  `id_pembeli` varchar(11) NOT NULL,
-  `nama_lengkap_pembeli` varchar(100) NOT NULL,
-  `jenis_kelamin` enum('pria','wanita') NOT NULL,
-  `no_telepon_pembeli` int(13) NOT NULL,
-  `email_pembeli` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -152,21 +152,27 @@ CREATE TABLE `tb_transaksi` (
 --
 
 --
+-- Indexes for table `tb_customer`
+--
+ALTER TABLE `tb_customer`
+  ADD PRIMARY KEY (`id_pembeli`);
+
+--
 -- Indexes for table `tb_detail_transaksi`
 --
 ALTER TABLE `tb_detail_transaksi`
   ADD PRIMARY KEY (`id_detail_transaksi`);
 
 --
--- Indexes for table `tb_kategori`
+-- Indexes for table `tb_kategori_produk`
 --
-ALTER TABLE `tb_kategori`
+ALTER TABLE `tb_kategori_produk`
   ADD PRIMARY KEY (`id_kategori`);
 
 --
--- Indexes for table `tb_kode_perusahaan`
+-- Indexes for table `tb_kode_pabrik`
 --
-ALTER TABLE `tb_kode_perusahaan`
+ALTER TABLE `tb_kode_pabrik`
   ADD PRIMARY KEY (`id_kode`);
 
 --
@@ -182,12 +188,6 @@ ALTER TABLE `tb_login`
 --
 ALTER TABLE `tb_pegawai`
   ADD PRIMARY KEY (`id_pegawai`);
-
---
--- Indexes for table `tb_pembeli`
---
-ALTER TABLE `tb_pembeli`
-  ADD PRIMARY KEY (`id_pembeli`);
 
 --
 -- Indexes for table `tb_produk`
@@ -219,20 +219,20 @@ ALTER TABLE `tb_transaksi`
 --
 ALTER TABLE `tb_login`
   ADD CONSTRAINT `tb_login_ibfk_1` FOREIGN KEY (`id_pegawai`) REFERENCES `tb_pegawai` (`id_pegawai`),
-  ADD CONSTRAINT `tb_login_ibfk_2` FOREIGN KEY (`id_kode`) REFERENCES `tb_kode_perusahaan` (`id_kode`);
+  ADD CONSTRAINT `tb_login_ibfk_2` FOREIGN KEY (`id_kode`) REFERENCES `tb_kode_pabrik` (`id_kode`);
 
 --
 -- Constraints for table `tb_produk`
 --
 ALTER TABLE `tb_produk`
-  ADD CONSTRAINT `tb_produk_ibfk_1` FOREIGN KEY (`id_kategori`) REFERENCES `tb_kategori` (`id_kategori`),
+  ADD CONSTRAINT `tb_produk_ibfk_1` FOREIGN KEY (`id_kategori`) REFERENCES `tb_kategori_produk` (`id_kategori`),
   ADD CONSTRAINT `tb_produk_ibfk_2` FOREIGN KEY (`id_supplier`) REFERENCES `tb_supplier` (`id_supplier`);
 
 --
 -- Constraints for table `tb_transaksi`
 --
 ALTER TABLE `tb_transaksi`
-  ADD CONSTRAINT `tb_transaksi_ibfk_1` FOREIGN KEY (`id_pembeli`) REFERENCES `tb_pembeli` (`id_pembeli`);
+  ADD CONSTRAINT `tb_transaksi_ibfk_1` FOREIGN KEY (`id_pembeli`) REFERENCES `tb_customer` (`id_pembeli`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
